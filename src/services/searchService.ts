@@ -16,7 +16,7 @@ export const searchAPI = async (query: string): Promise<SearchResult[]> => {
   console.log(`Searching for: ${query}`);
   
   try {
-    const response = await fetch(`${API_BASE_URL}/search?query=${encodeURIComponent(query)}`, {
+    const response = await fetch(`${API_BASE_URL}/search?q=${encodeURIComponent(query)}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
