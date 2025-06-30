@@ -16,7 +16,7 @@ export const searchAPI = async (query: string): Promise<SearchResult[]> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'true'  // ADD THIS LINE
+        'ngrok-skip-browser-warning': 'true'
       },
     });
     
@@ -27,27 +27,19 @@ export const searchAPI = async (query: string): Promise<SearchResult[]> => {
     const data = await response.json();
     console.log('API response:', data);
     
-    // Handle different response structures
-    let resultsArray;
-    if (Array.isArray(data)) {
-      resultsArray = data;
-    } else if (data.results && Array.isArray(data.results)) {
-      resultsArray = data.results;
-    } else {
-      // If it's a single object, wrap it in an array
-      resultsArray = [data];
-    }
+    // Handle your specific API response structure
+    const resultsArray = data.results || [];
     
-    // Map the API response to our SearchResult interface
+    // Map the API response to your SearchResult interface
     const results: SearchResult[] = resultsArray.map((item: any, index: number) => ({
-      id: item.id || `result-${index}`,
+      id: item.result_number?.toString() || `result-${index}`,
       title: item.title || 'Untitled',
-      content: item.content || item.description || '',
-      url: item.url,
-      score: item.score || item.relevance || 1,
+      content: item.summary || item.content || '', // Use summary as content
+      url: item.url || item.source, // Use source if no URL
+      score: item.score || (1 - index * 0.1), // Generate scores if not provided
     }));
     
-    return results.slice(0, 10); // Return top 10 results
+    return results;
   } catch (error) {
     console.error('Search API error:', error);
     throw new Error('Failed to fetch search results');
