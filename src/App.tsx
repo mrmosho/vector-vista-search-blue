@@ -24,4 +24,23 @@ const App = () => (
   </QueryClientProvider>
 );
 
+const handleSearch = async () => {
+  console.log("🔍 Search triggered with query:", query);
+  setLoading(true);
+  setError(null);
+  setResults(null);
+  
+  try {
+    console.log("📡 Calling API...");
+    const data = await fetchData(query);
+    console.log("✅ API response:", data);
+    setResults(data);
+  } catch (err) {
+    console.error("❌ Search error:", err);
+    setError(`Search failed: ${err.message}`);
+  } finally {
+    setLoading(false);
+  }
+};
+
 export default App;
