@@ -1,14 +1,18 @@
-
 import React from 'react';
 import { Search } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
+// Updated interface to match your API response
 interface SearchResult {
   id: string;
   title: string;
   content: string;
   url?: string;
   score: number;
+  date?: string;        // Add date field
+  source?: string;      // Add source field
+  resultNumber?: number; // Add result number
+  summary?: string;     // Add summary field
 }
 
 interface SearchResultsProps {
@@ -81,8 +85,24 @@ const SearchResults = ({ results, isLoading, query }: SearchResultsProps) => {
                   result.title
                 )}
               </CardTitle>
-              <div className="flex items-center gap-2 text-sm text-sigma-blue">
+              
+              <div className="flex items-center gap-2 text-sm text-sigma-blue flex-wrap">
                 <span>Relevance: {(result.score * 100).toFixed(1)}%</span>
+                
+                {result.date && (
+                  <>
+                    <span>•</span>
+                    <span>{result.date}</span>
+                  </>
+                )}
+                
+                {result.source && (
+                  <>
+                    <span>•</span>
+                    <span className="text-sigma-lightBlue">{result.source}</span>
+                  </>
+                )}
+                
                 {result.url && (
                   <>
                     <span>•</span>
@@ -91,8 +111,16 @@ const SearchResults = ({ results, isLoading, query }: SearchResultsProps) => {
                 )}
               </div>
             </CardHeader>
+            
             <CardContent>
               <p className="text-gray-700 leading-relaxed">{result.content}</p>
+              
+              {/* Show result number if available */}
+              {result.resultNumber && (
+                <div className="mt-2 text-xs text-gray-500">
+                  Result #{result.resultNumber}
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
