@@ -1,4 +1,3 @@
-
 export interface SearchResult {
   id: string;
   title: string;
@@ -17,26 +16,37 @@ export const searchAPI = async (query: string): Promise<SearchResult[]> => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true'  // ADD THIS LINE
       },
     });
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-
+    
     const data = await response.json();
     console.log('API response:', data);
     
+    // Handle different response structures
+    let resultsArray;
+    if (Array.isArray(data)) {
+      resultsArray = data;
+    } else if (data.results && Array.isArray(data.results)) {
+      resultsArray = data.results;
+    } else {
+      // If it's a single object, wrap it in an array
+      resultsArray = [data];
+    }
+    
     // Map the API response to our SearchResult interface
-    // Adjust this mapping based on your actual API response structure
-    const results: SearchResult[] = data.map((item: any, index: number) => ({
+    const results: SearchResult[] = resultsArray.map((item: any, index: number) => ({
       id: item.id || `result-${index}`,
       title: item.title || 'Untitled',
       content: item.content || item.description || '',
       url: item.url,
       score: item.score || item.relevance || 1,
     }));
-
+    
     return results.slice(0, 10); // Return top 10 results
   } catch (error) {
     console.error('Search API error:', error);
