@@ -7,7 +7,7 @@ export interface SearchResult {
   score: number;
 }
 
-const API_BASE_URL = 'http://62.193.124.9:8000';
+const API_BASE_URL = 'https://a6ad-62-193-124-9.ngrok-free.app:8000';
 
 export const searchAPI = async (query: string): Promise<SearchResult[]> => {
   console.log(`Searching for: ${query}`);
